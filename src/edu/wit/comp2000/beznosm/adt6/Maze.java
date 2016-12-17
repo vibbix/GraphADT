@@ -2,10 +2,8 @@ package edu.wit.comp2000.beznosm.adt6;
 
 import javafx.util.Pair;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Queue;
-import java.util.Stack;
+import java.io.*;
+import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
 
 /**
@@ -31,6 +29,32 @@ public class Maze {
     public Maze(char[][] maze){
         createMaze(maze);
         this.nodes = new ArrayList<>();
+    }
+    public Maze(File maze) throws Exception{
+        StringBuilder sb = new StringBuilder();
+        try{
+            InputStream is = new FileInputStream(maze.getAbsolutePath());
+            BufferedReader buf = new BufferedReader(new InputStreamReader(is));
+
+            String line = buf.readLine();
+
+            while(line != null){
+                sb.append(line).append("\n");
+                line = buf.readLine();
+            }
+
+        }catch(Exception ex){
+            throw ex;
+        }
+        this.nodes = new ArrayList<>();
+        String m = sb.toString();
+        m = m.replace("\r\n", "\n");
+        ArrayList<char[]> chars = new ArrayList<>();
+        for(String line: m.split("\n")){
+            line = line.trim();
+            chars.add(line.toCharArray());
+        }
+        createMaze(chars.toArray(new char[][]{}));
     }
 
     /**
@@ -111,16 +135,43 @@ public class Maze {
         }
         return n;
     }
-//    private Node[] dfs(){
-//        Stack<Node> stack = new Stack<>();
-//        HashSet<Node> visited = new HashSet<>();
-//        stack.push(this.entrance);
-//        Node n =
-//        while
+    public List<Node> findPath(){
+        ArrayList<Node> path = new ArrayList<>();
+        HashSet<Node> hs = new HashSet<>();
+        this.dfs(hs, this.entrance, path, this.exit);
+        System.out.println(Arrays.toString(hs.toArray()));
+        return path;
+    }
+    private void dfs(HashSet<Node> visisted, Node current, List<Node> path, Node target){
+        visisted.add(current);
+        path.add(current);
+        if (current == target){
+            return;
+        }
+        for(Node n:current.getNeighbors()){
+            if(visisted.contains(n))
+                continue;
+            dfs(visisted,n, path,target);
+        }
+        path.remove(current);
+//        if(current == target)
+//            return true;
+//        if (current != this.entrance && visisted.contains(current)){
+//            return false;
+//        }
+//        path.add(current);
+//        visisted.add(current);
 //
-//    }
-//    private Node[] bfs(){
-//        Queue<Node> queue= new ArrayBlockingQueue<Node>();
-//        queue.add
-//    }
+//        for (Node n:current.getNeighbors()){
+//            if(visisted.contains(n))
+//                continue;
+//            if(dfs(visisted, current,path,target)){
+//                return true;
+//            }else{
+//                path.remove(n);
+//            }
+//        }
+//        return false;
+    }
+
 }
