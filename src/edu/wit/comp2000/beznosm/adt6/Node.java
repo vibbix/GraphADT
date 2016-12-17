@@ -71,5 +71,8 @@ public class Node {
     public int getY() {
         return y;
     }
-
+    @Override
+    public String toString(){
+        return "Node{x:"+this.getX()+", y:" + this.getY()+"}";
+    }
 }

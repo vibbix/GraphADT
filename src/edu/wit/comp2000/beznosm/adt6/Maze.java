@@ -143,35 +143,31 @@ public class Maze {
         return path;
     }
     private void dfs(HashSet<Node> visisted, Node current, List<Node> path, Node target){
-        visisted.add(current);
-        path.add(current);
-        if (current == target){
-            return;
-        }
-        for(Node n:current.getNeighbors()){
-            if(visisted.contains(n))
+        Stack<Node> s = new Stack<>();
+        //<child, parent>
+        HashMap<Node, Node> hm = new HashMap<>();
+        s.push(current);
+        while(!s.isEmpty()){
+            Node n = s.pop();
+            System.out.println(Arrays.toString(s.toArray()));
+            if(visisted.contains(n)){
                 continue;
-            dfs(visisted,n, path,target);
+            }
+            visisted.add(n);
+            if(n == target){
+                Node qn = n;
+                while(qn != null && qn != this.entrance){
+                    path.add(qn);
+                    qn = hm.get(qn);
+                }
+                break;
+            }
+            List<Node> children = n.getNeighbors();
+            for (Node cn: children){
+                hm.put(cn, n);
+                s.push(cn);
+            }
         }
-        path.remove(current);
-//        if(current == target)
-//            return true;
-//        if (current != this.entrance && visisted.contains(current)){
-//            return false;
-//        }
-//        path.add(current);
-//        visisted.add(current);
-//
-//        for (Node n:current.getNeighbors()){
-//            if(visisted.contains(n))
-//                continue;
-//            if(dfs(visisted, current,path,target)){
-//                return true;
-//            }else{
-//                path.remove(n);
-//            }
-//        }
-//        return false;
     }
 
 }
